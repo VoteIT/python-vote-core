@@ -77,3 +77,9 @@ Schulze method example::
       ('D', 'A'): 18,
       ('D', 'B'): 21},
      'winner': 'C'}
+
+---
+
+This library would not be possible without the contributions of its
+various authors.  Please see the `CONTRIBUTORS` file for a list of
+developers who have contributed to this software.
