@@ -165,11 +165,13 @@ class TestSchulzeMethod(unittest.TestCase):
             {"count": 1, "ballot": [["A"], ["B", "C"]]},
             {"count": 1, "ballot": [["B"], ["A"], ["C"]]},
         ]
-        output_tuple = SchulzeMethod(input_tuple, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
-        output_list = SchulzeMethod(input_list, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
+        tie_breaker=["A","B","C"]
+        output_tuple = SchulzeMethod(input_tuple, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING, tie_breaker=tie_breaker).as_dict()
+        output_list = SchulzeMethod(input_list, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING,tie_breaker=tie_breaker).as_dict()
 
         # Run tests
         self.assertEqual(output_tuple, output_list)
+
 
 if __name__ == "__main__":
     unittest.main()
