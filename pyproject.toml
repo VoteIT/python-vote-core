@@ -1,0 +1,74 @@
+[project]
+name = "py-vote-core"
+version = "2.0.0"
+description = "An implementation of various election methods, most notably the Schulze Method and Schulze STV."
+authors = [
+    {name = "Brad Beattie"}
+]
+license = {text = "GPLv3"}
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["library", "election"]
+dependencies = [
+    "python-graph[dot] (>=2.0.0)"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+[project.urls]
+Homepage = "https://github.com/VoteIT/python-vote-core"
+Repository = "https://github.com/VoteIT/python-vote-core.git"
+Issues = "https://github.com/VoteIT/python-vote-core/issues"
+Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[tool.poetry]
+packages = [
+    { include = "py3votecore" },
+]
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.9.0"
+pytest = "^8.4.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules" # --maxfail=1
+doctest_optionflags = [
+    "NORMALIZE_WHITESPACE",
+    "IGNORE_EXCEPTION_DETAIL",
+    "ELLIPSIS",
+]
+testpaths = [
+    "test_functionality",
+    "test_performance",
+]
+
+
+[tool.coverage.run]
+command_line = "-m pytest --doctest-modules"
+source = ["py3votecore"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+skip_empty = true
+exclude_also = [
+    'def __repr__',
+    'if self.debug:',
+    'raise AssertionError',
+    'raise NotImplementedError',
+    'if 0:',
+    'if __name__ == .__main__.:',
+    'if TYPE_CHECKING:',
+    'class .*\bProtocol\):',
+    '@(abc\.)?abstractmethod',
+]

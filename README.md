@@ -1,21 +1,8 @@
-Python Vote Core
-================
+# Python Vote Core (py-vote-core)
 
-python-vote-core implements various electoral methods, providing the
-results calculated off a provided set of ballots and options.  *This
-fork implements only Python3 compatibility!*
 
-* Project page: http://github.com/the-maldridge/python-vote-core
-* Issue tracker: http://github.com/the-maldridge/python-vote-core/issues
-
-Python3
--------
-
-This fork implements Python3 functionality by using 2to3 and then
-cherry-picking fixes from other people's forks.  This is certainly not
-a clean way to do so but 100% of the tests pass on Python3.
-
-This fork exists solely to have a PyPI release under Python3.
+py-vote-core implements various electoral methods, providing the
+results calculated off a provided set of ballots and options.
 
 Methods implemented
 -------------------
