@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import itertools
 from abc import ABC
 from abc import abstractmethod
@@ -21,7 +22,7 @@ class CondorcetHelper:
     candidates: set[Any]
 
     def standardize_ballots(self, ballots: list[Ballot], ballot_notation: int | None) -> None:
-        self.ballots = ballots
+        self.ballots = copy.deepcopy(ballots)
         if ballot_notation == CondorcetHelper.BALLOT_NOTATION_GROUPING:
             for ballot in self.ballots:
                 new_ballot: dict[Any, float] = {}

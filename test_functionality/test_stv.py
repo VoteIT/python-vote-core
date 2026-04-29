@@ -252,6 +252,22 @@ class TestSTV(unittest.TestCase):
         # Run tests
         self.assertEqual(output["winners"], set(["A", "B", "C"]))
 
+    # STV, regression test: quota must be updated after a ballot reset.
+    # Before the fix, self.quota (original) was used for winner determination
+    # and surplus redistribution instead of the recalculated local quota.
+    def test_stv_reset_quota(self):
+
+        # Ballots exhausted before all seats filled, triggering a reset.
+        # After reset, the new quota is higher than the original; only
+        # candidates that actually reach the new threshold should win.
+        input = [
+            {"count": 4, "ballot": ["A", "B"]},
+            {"count": 3, "ballot": ["B"]},
+        ]
+        output = STV(input, required_winners=2).as_dict()
+
+        self.assertEqual(output["winners"], set(["A", "B"]))
+
 
 if __name__ == "__main__":
     unittest.main()

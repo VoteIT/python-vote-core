@@ -56,7 +56,7 @@ class STV(MultipleWinnerVotingSystem):
                     round["winners"] = {
                         candidate
                         for candidate, tally in round["tallies"].items()
-                        if tally >= self.quota
+                        if tally >= quota
                     }
                     self.winners |= round["winners"]
                     remaining_candidates -= round["winners"]
@@ -64,7 +64,7 @@ class STV(MultipleWinnerVotingSystem):
                     for ballot in ballots:
                         if ballot["ballot"] and ballot["ballot"][0] in round["winners"]:
                             ballot["count"] *= (
-                                round["tallies"][ballot["ballot"][0]] - self.quota
+                                round["tallies"][ballot["ballot"][0]] - quota
                             ) / round["tallies"][ballot["ballot"][0]]
 
                     ballots = self.remove_candidates_from_ballots(round["winners"], ballots)
