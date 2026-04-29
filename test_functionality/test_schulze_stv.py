@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.schulze_stv import SchulzeSTV
-from py3votecore.schulze_helper import SchulzeHelper
 import unittest
+
+from py3votecore.schulze_helper import SchulzeHelper
+from py3votecore.schulze_stv import SchulzeSTV
 
 
 class TestSchulzeSTV(unittest.TestCase):
-
     # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
     # and Vote Management under Proportional Representation by the Single
     # Transferable Vote, section 5.5).
@@ -48,10 +48,14 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 24, "ballot": [["e"], ["c"], ["a"], ["d"], ["b"]]},
             {"count": 3, "ballot": [["e"], ["d"], ["c"], ["b"], ["a"]]},
         ]
-        output = SchulzeSTV(input, required_winners=3, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=3,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output['winners'], set(['a', 'd', 'e']))
+        self.assertEqual(output["winners"], set(["a", "d", "e"]))
 
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV
     def test_wiki_example_1(self):
@@ -64,19 +68,33 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=2,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['Carter', 'Brad', 'Andrea']),
-            'actions': [
-                {'edges': set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])},
-                {'nodes': set([('Brad', 'Carter')])},
-                {'edges': set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])},
-                {'nodes': set([('Andrea', 'Carter')])}
-            ],
-            'winners': set(['Andrea', 'Brad'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Carter", "Brad", "Andrea"]),
+                "actions": [
+                    {
+                        "edges": set(
+                            [
+                                (("Brad", "Carter"), ("Andrea", "Carter")),
+                                (("Brad", "Carter"), ("Andrea", "Brad")),
+                            ]
+                        )
+                    },
+                    {"nodes": set([("Brad", "Carter")])},
+                    {"edges": set([(("Andrea", "Carter"), ("Andrea", "Brad"))])},
+                    {"nodes": set([("Andrea", "Carter")])},
+                ],
+                "winners": set(["Andrea", "Brad"]),
+            },
+        )
 
     # http://en.wikipedia.org/wiki/Schulze_STV#Count_under_Schulze_STV_2
     def test_wiki_example_2(self):
@@ -89,31 +107,45 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=2,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['Carter', 'Brad', 'Andrea']),
-            'actions': [
-                {'edges': set([(('Brad', 'Carter'), ('Andrea', 'Carter')), (('Brad', 'Carter'), ('Andrea', 'Brad'))])},
-                {'nodes': set([('Brad', 'Carter')])},
-                {'edges': set([(('Andrea', 'Carter'), ('Andrea', 'Brad'))])},
-                {'nodes': set([('Andrea', 'Carter')])}
-            ],
-            'winners': set(['Andrea', 'Brad'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Carter", "Brad", "Andrea"]),
+                "actions": [
+                    {
+                        "edges": set(
+                            [
+                                (("Brad", "Carter"), ("Andrea", "Carter")),
+                                (("Brad", "Carter"), ("Andrea", "Brad")),
+                            ]
+                        )
+                    },
+                    {"nodes": set([("Brad", "Carter")])},
+                    {"edges": set([(("Andrea", "Carter"), ("Andrea", "Brad"))])},
+                    {"nodes": set([("Andrea", "Carter")])},
+                ],
+                "winners": set(["Andrea", "Brad"]),
+            },
+        )
 
     #
     def test_one_ballot_one_winner(self):
 
         # Generate data
-        input = [
-            {"count": 1, "ballot": {"a": 1, "b": 1, "c": 3}}
-        ]
-        output = SchulzeSTV(input, required_winners=1, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RATING).as_dict()
+        input = [{"count": 1, "ballot": {"a": 1, "b": 1, "c": 3}}]
+        output = SchulzeSTV(
+            input, required_winners=1, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RATING
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output['winners'], set(["c"]))
+        self.assertEqual(output["winners"], set(["c"]))
 
     # This example ensures that vote management strength calculations are
     # calculated correctly.
@@ -123,13 +155,20 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             {"count": 1, "ballot": {"Metal": 1, "Paper": 1, "Plastic": 2, "Wood": 2}},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=2,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['Paper', 'Wood', 'Metal', 'Plastic']),
-            'winners': set(['Paper', 'Metal'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Paper", "Wood", "Metal", "Plastic"]),
+                "winners": set(["Paper", "Metal"]),
+            },
+        )
 
     # This example ensures that the proportional completion round correctly
     # accounts for sparse pattern weights.
@@ -138,15 +177,22 @@ class TestSchulzeSTV(unittest.TestCase):
         # Generate data
         input = [
             {"count": 1, "ballot": {"Metal": 2, "Paper": 1, "Plastic": 2, "Wood": 2}},
-            {"count": 1, "ballot": {"Metal": 2, "Paper": 2, "Plastic": 2, "Wood": 1}}
+            {"count": 1, "ballot": {"Metal": 2, "Paper": 2, "Plastic": 2, "Wood": 1}},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=2,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(['Metal', 'Wood', 'Plastic', 'Paper']),
-            "winners": set(['Paper', 'Wood']),
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Metal", "Wood", "Plastic", "Paper"]),
+                "winners": set(["Paper", "Wood"]),
+            },
+        )
 
     #
     def test_happenstance_example(self):
@@ -155,14 +201,18 @@ class TestSchulzeSTV(unittest.TestCase):
         input = [
             {"count": 1, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2}},
             {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
-            {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
+            {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}},
         ]
-        output = SchulzeSTV(input, required_winners=2, ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=2,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_RANKING,
+        ).as_dict()
 
         # Run tests
         self.assertEqual(
             output["tied_winners"],
-            set([('D', 'E'), ('B', 'E'), ('C', 'E'), ('B', 'D')])
+            set([("D", "E"), ("B", "E"), ("C", "E"), ("B", "D")]),
         )
 
     # Any winner set should include one from each of A, B, and C
@@ -174,7 +224,11 @@ class TestSchulzeSTV(unittest.TestCase):
             {"count": 2, "ballot": [["B1", "B2"], ["A1", "A2", "C1", "C2"]]},
             {"count": 4, "ballot": [["C1", "C2"], ["B1", "B2"], ["A1", "A2"]]},
         ]
-        output = SchulzeSTV(input, required_winners=3, ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzeSTV(
+            input,
+            required_winners=3,
+            ballot_notation=SchulzeSTV.BALLOT_NOTATION_GROUPING,
+        ).as_dict()
 
         # Run tests
         self.assertTrue(set(["A1", "A2"]) & output["winners"])
@@ -185,7 +239,7 @@ class TestSchulzeSTV(unittest.TestCase):
     def test_A53_proportional_completion(self):
 
         # From A53.dat
-        A53 = '''\
+        A53 = """\
   1  1 99 99 99 99  4  3  2 99 99
   2  1  2  4  5  3  9  6 10  8  7
   3  2  6 10  7  3  8  5  9  1  4
@@ -646,10 +700,10 @@ class TestSchulzeSTV(unittest.TestCase):
 458  1  4 10  5  9  8  6  2  7  3
 459  1 99  3  2 99 99 99 99 99 99
 460  1  3  7  2 10  8  6  9  4  5
-'''
+"""
 
         # From A53_prop.dat (A C D I against H)
-        expected = '''\
+        expected = """\
 115.905886 1 1 1 1
 53.964692 1 1 1 3
 22.199966 1 1 3 1
@@ -666,22 +720,33 @@ class TestSchulzeSTV(unittest.TestCase):
 15.275312 3 3 1 3
 8.449341 3 3 3 1
 58.147937 3 3 3 3
-'''
+"""
 
-        candidates = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+        candidates = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
         helper = SchulzeHelper()
         helper.required_winners = 4
-        helper.standardize_ballots([
-            {"count": 1, "ballot": dict(list(zip(candidates, [int(r) for r in line.split()[1:]])))}
-            for line in A53.splitlines()
-        ], helper.BALLOT_NOTATION_RANKING)
+        helper.standardize_ballots(
+            [
+                {
+                    "count": 1,
+                    "ballot": dict(
+                        list(zip(candidates, [int(r) for r in line.split()[1:]], strict=False))
+                    ),
+                }
+                for line in A53.splitlines()
+            ],
+            helper.BALLOT_NOTATION_RANKING,
+        )
         helper.generate_completed_patterns()
-        completed = helper.proportional_completion('h', ('a', 'c', 'd', 'i'))
+        completed = helper.proportional_completion("h", ("a", "c", "d", "i"))
         self.assertEqual(
-            sorted((pattern, round(weight, 6))
-                   for (pattern, weight) in list(completed.items())),
-            [(tuple(int(r) for r in line.split()[1:]), float(line.split()[0]))
-             for line in expected.splitlines()])
+            sorted((pattern, round(weight, 6)) for (pattern, weight) in list(completed.items())),
+            [
+                (tuple(int(r) for r in line.split()[1:]), float(line.split()[0]))
+                for line in expected.splitlines()
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

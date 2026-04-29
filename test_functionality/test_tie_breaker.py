@@ -13,39 +13,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.tie_breaker import TieBreaker
 import unittest
+
+from py3votecore.tie_breaker import TieBreaker
 
 
 class TestTieBreaker(unittest.TestCase):
-
     def setUp(self):
-        self.tieBreaker = TieBreaker(['a', 'b', 'c', 'd'])
-        self.tieBreaker.random_ordering = ['a', 'b', 'c', 'd']
+        self.tieBreaker = TieBreaker(["a", "b", "c", "d"])
+        self.tieBreaker.random_ordering = ["a", "b", "c", "d"]
 
     def test_simple_tie(self):
-        self.assertEqual(
-            self.tieBreaker.break_ties(set(['b', 'c'])),
-            'b'
-        )
+        self.assertEqual(self.tieBreaker.break_ties(set(["b", "c"])), "b")
 
     def test_simple_tie_reverse(self):
-        self.assertEqual(
-            self.tieBreaker.break_ties(set(['b', 'c']), reverse=True),
-            'c'
-        )
+        self.assertEqual(self.tieBreaker.break_ties(set(["b", "c"]), reverse=True), "c")
 
     def test_tuple_tie(self):
         self.assertEqual(
-            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'), ('c', 'b')])),
-            ('b', 'd')
+            self.tieBreaker.break_ties(set([("c", "a"), ("b", "d"), ("c", "b")])),
+            ("b", "d"),
         )
 
     def test_tuple_tie_reverse(self):
         self.assertEqual(
-            self.tieBreaker.break_ties(set([('c', 'a'), ('b', 'd'), ('c', 'b')]), reverse=True),
-            ('c', 'b')
+            self.tieBreaker.break_ties(set([("c", "a"), ("b", "d"), ("c", "b")]), reverse=True),
+            ("c", "b"),
         )
+
 
 if __name__ == "__main__":
     unittest.main()

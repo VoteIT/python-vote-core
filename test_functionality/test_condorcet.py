@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.schulze_method import SchulzeMethod
 import unittest
+
+from py3votecore.schulze_method import SchulzeMethod
 
 
 class TestCondorcet(unittest.TestCase):
-
     def test_grouping_format(self):
 
         # Generate data
@@ -29,26 +29,31 @@ class TestCondorcet(unittest.TestCase):
             {"count": 13, "ballot": [["Carter"], ["Andrea"], ["Brad"]]},
             {"count": 27, "ballot": [["Brad"]]},
         ]
-        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzeMethod(
+            input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_GROUPING
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(['Carter', 'Brad', 'Andrea']),
-            "pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Brad', 'Carter'): 39,
-                ('Carter', 'Andrea'): 13,
-                ('Andrea', 'Carter'): 50,
-                ('Brad', 'Andrea'): 27,
-                ('Carter', 'Brad'): 51
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Carter", "Brad", "Andrea"]),
+                "pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Brad", "Carter"): 39,
+                    ("Carter", "Andrea"): 13,
+                    ("Andrea", "Carter"): 50,
+                    ("Brad", "Andrea"): 27,
+                    ("Carter", "Brad"): 51,
+                },
+                "strong_pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Carter", "Brad"): 51,
+                    ("Andrea", "Carter"): 50,
+                },
+                "winner": "Andrea",
             },
-            "strong_pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Carter', 'Brad'): 51,
-                ('Andrea', 'Carter'): 50
-            },
-            "winner": 'Andrea'
-        })
+        )
 
     def test_ranking_format(self):
 
@@ -58,28 +63,33 @@ class TestCondorcet(unittest.TestCase):
             {"count": 26, "ballot": {"Andrea": 1, "Carter": 2, "Brad": 3}},
             {"count": 12, "ballot": {"Andrea": 1, "Carter": 2, "Brad": 3}},
             {"count": 13, "ballot": {"Carter": 1, "Andrea": 2, "Brad": 3}},
-            {"count": 27, "ballot": {"Brad": 1}}
+            {"count": 27, "ballot": {"Brad": 1}},
         ]
-        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeMethod(
+            input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RANKING
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(['Carter', 'Brad', 'Andrea']),
-            "pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Brad', 'Carter'): 39,
-                ('Carter', 'Andrea'): 13,
-                ('Andrea', 'Carter'): 50,
-                ('Brad', 'Andrea'): 27,
-                ('Carter', 'Brad'): 51
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Carter", "Brad", "Andrea"]),
+                "pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Brad", "Carter"): 39,
+                    ("Carter", "Andrea"): 13,
+                    ("Andrea", "Carter"): 50,
+                    ("Brad", "Andrea"): 27,
+                    ("Carter", "Brad"): 51,
+                },
+                "strong_pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Carter", "Brad"): 51,
+                    ("Andrea", "Carter"): 50,
+                },
+                "winner": "Andrea",
             },
-            "strong_pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Carter', 'Brad'): 51,
-                ('Andrea', 'Carter'): 50
-            },
-            "winner": 'Andrea'
-        })
+        )
 
     def test_rating_format(self):
 
@@ -89,28 +99,34 @@ class TestCondorcet(unittest.TestCase):
             {"count": 26, "ballot": {"Andrea": 10, "Carter": 5, "Brad": 3}},
             {"count": 12, "ballot": {"Andrea": 10, "Carter": 5, "Brad": 3}},
             {"count": 13, "ballot": {"Carter": 10, "Andrea": 5, "Brad": 3}},
-            {"count": 27, "ballot": {"Brad": 10}}
+            {"count": 27, "ballot": {"Brad": 10}},
         ]
-        output = SchulzeMethod(input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RATING).as_dict()
+        output = SchulzeMethod(
+            input, ballot_notation=SchulzeMethod.BALLOT_NOTATION_RATING
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(['Carter', 'Brad', 'Andrea']),
-            "pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Brad', 'Carter'): 39,
-                ('Carter', 'Andrea'): 13,
-                ('Andrea', 'Carter'): 50,
-                ('Brad', 'Andrea'): 27,
-                ('Carter', 'Brad'): 51
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["Carter", "Brad", "Andrea"]),
+                "pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Brad", "Carter"): 39,
+                    ("Carter", "Andrea"): 13,
+                    ("Andrea", "Carter"): 50,
+                    ("Brad", "Andrea"): 27,
+                    ("Carter", "Brad"): 51,
+                },
+                "strong_pairs": {
+                    ("Andrea", "Brad"): 63,
+                    ("Carter", "Brad"): 51,
+                    ("Andrea", "Carter"): 50,
+                },
+                "winner": "Andrea",
             },
-            "strong_pairs": {
-                ('Andrea', 'Brad'): 63,
-                ('Carter', 'Brad'): 51,
-                ('Andrea', 'Carter'): 50
-            },
-            "winner": 'Andrea'
-        })
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

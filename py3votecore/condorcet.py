@@ -1,36 +1,30 @@
-# Copyright (C) 2009, Brad Beattie
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import annotations
 
-from abc import ABCMeta, abstractmethod
-from .abstract_classes import SingleWinnerVotingSystem
-from pygraph.classes.digraph import digraph
 import itertools
+from abc import ABC
+from abc import abstractmethod
+from typing import Any
+
+from pygraph.classes.digraph import digraph  # type: ignore[import-untyped]
+
+from .abstract_classes import Ballot
+from .abstract_classes import SingleWinnerVotingSystem
+from .tie_breaker import TieBreaker
 
 
-class CondorcetHelper(object):
-
+class CondorcetHelper:
     BALLOT_NOTATION_GROUPING = 0
     BALLOT_NOTATION_RANKING = 1
     BALLOT_NOTATION_RATING = 2
 
-    def standardize_ballots(self, ballots, ballot_notation):
+    ballots: list[Ballot]
+    candidates: set[Any]
 
+    def standardize_ballots(self, ballots: list[Ballot], ballot_notation: int | None) -> None:
         self.ballots = ballots
         if ballot_notation == CondorcetHelper.BALLOT_NOTATION_GROUPING:
             for ballot in self.ballots:
-                new_ballot = {}
+                new_ballot: dict[Any, float] = {}
                 r = len(ballot["ballot"])
                 for rank in ballot["ballot"]:
                     for candidate in rank:
@@ -57,38 +51,40 @@ class CondorcetHelper(object):
             for candidate in self.candidates - set(ballot["ballot"].keys()):
                 ballot["ballot"][candidate] = lowest_preference
 
-    def graph_winner(self):
-        losing_candidates = set([edge[1] for edge in self.graph.edges()])
-        winning_candidates = set(self.graph.nodes()) - losing_candidates
+    def graph_winner(self) -> None:
+        losing_candidates = {edge[1] for edge in self.graph.edges()}  # type: ignore[attr-defined]
+        winning_candidates = set(self.graph.nodes()) - losing_candidates  # type: ignore[attr-defined]
         if len(winning_candidates) == 1:
-            self.winner = list(winning_candidates)[0]
+            self.winner = list(winning_candidates)[0]  # type: ignore[attr-defined]
         elif len(winning_candidates) > 1:
-            self.tied_winners = winning_candidates
-            self.winner = self.break_ties(winning_candidates)
+            self.tied_winners = winning_candidates  # type: ignore[attr-defined]
+            self.winner = self.break_ties(winning_candidates)  # type: ignore[attr-defined]
         else:
-            self.condorcet_completion_method()
+            self.condorcet_completion_method()  # type: ignore[attr-defined]
 
     @staticmethod
-    def ballots_into_graph(candidates, ballots):
+    def ballots_into_graph(candidates: set[Any], ballots: list[Ballot]) -> digraph:
         graph = digraph()
         graph.add_nodes(candidates)
         for pair in itertools.permutations(candidates, 2):
-            graph.add_edge(pair, sum([
-                ballot["count"]
-                for ballot in ballots
-                if ballot["ballot"][pair[0]] > ballot["ballot"][pair[1]]
-            ]))
+            graph.add_edge(
+                pair,
+                sum(
+                    [
+                        ballot["count"]
+                        for ballot in ballots
+                        if ballot["ballot"][pair[0]] > ballot["ballot"][pair[1]]
+                    ]
+                ),
+            )
         return graph
 
     @staticmethod
-    def edge_weights(graph):
-        return dict([
-            (edge, graph.edge_weight(edge))
-            for edge in graph.edges()
-        ])
+    def edge_weights(graph: digraph) -> dict[tuple[Any, Any], float]:
+        return {edge: graph.edge_weight(edge) for edge in graph.edges()}
 
     @staticmethod
-    def remove_weak_edges(graph):
+    def remove_weak_edges(graph: digraph) -> None:
         for pair in itertools.combinations(graph.nodes(), 2):
             pairs = (pair, (pair[1], pair[0]))
             weights = (graph.edge_weight(pairs[0]), graph.edge_weight(pairs[1]))
@@ -97,29 +93,33 @@ class CondorcetHelper(object):
             if weights[1] >= weights[0]:
                 graph.del_edge(pairs[0])
 
-# This class determines the Condorcet winner if one exists.
 
-
-class CondorcetSystem(SingleWinnerVotingSystem, CondorcetHelper, metaclass=ABCMeta):
+class CondorcetSystem(SingleWinnerVotingSystem, CondorcetHelper, ABC):
+    graph: digraph
 
     @abstractmethod
-    def __init__(self, ballots, tie_breaker=None, ballot_notation=None):
+    def __init__(
+        self,
+        ballots: list[Ballot],
+        tie_breaker: TieBreaker | list[Any] | None = None,
+        ballot_notation: int | None = None,
+    ) -> None:
         self.standardize_ballots(ballots, ballot_notation)
-        super(CondorcetSystem, self).__init__(self.ballots, tie_breaker=tie_breaker)
+        super().__init__(self.ballots, tie_breaker=tie_breaker)
 
-    def calculate_results(self):
+    def calculate_results(self) -> None:
         self.graph = self.ballots_into_graph(self.candidates, self.ballots)
         self.pairs = self.edge_weights(self.graph)
         self.remove_weak_edges(self.graph)
         self.strong_pairs = self.edge_weights(self.graph)
         self.graph_winner()
 
-    def as_dict(self):
-        data = super(CondorcetSystem, self).as_dict()
-        if hasattr(self, 'pairs'):
+    def as_dict(self) -> dict[str, Any]:
+        data = super().as_dict()
+        if hasattr(self, "pairs"):
             data["pairs"] = self.pairs
-        if hasattr(self, 'strong_pairs'):
+        if hasattr(self, "strong_pairs"):
             data["strong_pairs"] = self.strong_pairs
-        if hasattr(self, 'tied_winners'):
+        if hasattr(self, "tied_winners"):
             data["tied_winners"] = self.tied_winners
         return data

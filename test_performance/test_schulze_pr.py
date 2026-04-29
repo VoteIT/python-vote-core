@@ -13,13 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.schulze_pr import SchulzePR
 import time
 import unittest
 
+from py3votecore.schulze_pr import SchulzePR
+
 
 class TestSchulzePR(unittest.TestCase):
-
     # This test considers a case that SchulzeSTV starts to choke on due to the
     # potential number of nodes and edges to consider.
     def test_10_candidates_5_winners(self):
@@ -27,11 +27,55 @@ class TestSchulzePR(unittest.TestCase):
         # Generate data
         startTime = time.time()
         input = [
-            {"count": 1, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2, "G": 9, "H": 9, "I": 9, "J": 9}},
-            {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
-            {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 9,
+                    "B": 1,
+                    "C": 1,
+                    "D": 9,
+                    "E": 9,
+                    "F": 2,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 3,
+                    "B": 2,
+                    "C": 3,
+                    "D": 1,
+                    "E": 9,
+                    "F": 9,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 9,
+                    "B": 9,
+                    "C": 9,
+                    "D": 9,
+                    "E": 1,
+                    "F": 9,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
         ]
-        SchulzePR(input, winner_threshold=5, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
+        SchulzePR(
+            input, winner_threshold=5, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING
+        ).as_dict()
 
         # Run tests
         self.assertTrue(time.time() - startTime < 1)
@@ -43,14 +87,59 @@ class TestSchulzePR(unittest.TestCase):
         # Generate data
         startTime = time.time()
         input = [
-            {"count": 1, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2, "G": 9, "H": 9, "I": 9, "J": 9}},
-            {"count": 1, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}},
-            {"count": 1, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9, "G": 9, "H": 9, "I": 9, "J": 9}}
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 9,
+                    "B": 1,
+                    "C": 1,
+                    "D": 9,
+                    "E": 9,
+                    "F": 2,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 3,
+                    "B": 2,
+                    "C": 3,
+                    "D": 1,
+                    "E": 9,
+                    "F": 9,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
+            {
+                "count": 1,
+                "ballot": {
+                    "A": 9,
+                    "B": 9,
+                    "C": 9,
+                    "D": 9,
+                    "E": 1,
+                    "F": 9,
+                    "G": 9,
+                    "H": 9,
+                    "I": 9,
+                    "J": 9,
+                },
+            },
         ]
-        SchulzePR(input, winner_threshold=9, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
+        SchulzePR(
+            input, winner_threshold=9, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING
+        ).as_dict()
 
         # Run tests
         self.assertTrue(time.time() - startTime < 2)
+
 
 if __name__ == "__main__":
     unittest.main()

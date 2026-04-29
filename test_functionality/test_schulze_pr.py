@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.schulze_pr import SchulzePR
 import unittest
+
+from py3votecore.schulze_pr import SchulzePR
 
 
 class TestSchulzePR(unittest.TestCase):
-
     # This example was detailed in Markus Schulze's schulze2.pdf (Free Riding
     # and Vote Management under Proportional Representation by the Single
     # Transferable Vote, section 6.2).
@@ -40,17 +40,20 @@ class TestSchulzePR(unittest.TestCase):
         output = SchulzePR(input, ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(["a", "b", "c", "d", "e"]),
-            "order": ["e", "c", "a", "b", "d"],
-            'rounds': [
-                {'winner': 'e'},
-                {'winner': 'c'},
-                {'winner': 'a'},
-                {'winner': 'b'},
-                {'winner': 'd'}
-            ],
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["a", "b", "c", "d", "e"]),
+                "order": ["e", "c", "a", "b", "d"],
+                "rounds": [
+                    {"winner": "e"},
+                    {"winner": "c"},
+                    {"winner": "a"},
+                    {"winner": "b"},
+                    {"winner": "d"},
+                ],
+            },
+        )
 
     def test_ties(self):
 
@@ -64,8 +67,8 @@ class TestSchulzePR(unittest.TestCase):
         # Run tests
         self.assertEqual(output["candidates"], set(["a", "b", "c", "d", "e"]))
         self.assertEqual(len(output["tie_breaker"]), 5)
-        self.assertEqual(output["rounds"][0]["tied_winners"], set(['a', 'd']))
-        self.assertEqual(output["rounds"][2]["tied_winners"], set(['c', 'b', 'e']))
+        self.assertEqual(output["rounds"][0]["tied_winners"], set(["a", "d"]))
+        self.assertEqual(output["rounds"][2]["tied_winners"], set(["c", "b", "e"]))
         self.assertEqual(len(output["rounds"][3]["tied_winners"]), 2)
 
     def test_reported_tie_bug(self):
@@ -75,12 +78,16 @@ class TestSchulzePR(unittest.TestCase):
             {"count": 1, "ballot": [["a", "b"], ["c"]]},
             {"count": 1, "ballot": [["c"], ["a", "b"]]},
         ]
-        output = SchulzePR(input, winner_threshold=3, ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING).as_dict()
+        output = SchulzePR(
+            input,
+            winner_threshold=3,
+            ballot_notation=SchulzePR.BALLOT_NOTATION_GROUPING,
+        ).as_dict()
 
         from pprint import PrettyPrinter
+
         print()
         PrettyPrinter(indent=4).pprint(output)
-
 
     def test_happenstance_example(self):
 
@@ -88,19 +95,22 @@ class TestSchulzePR(unittest.TestCase):
         input = [
             {"count": 23, "ballot": {"A": 9, "B": 1, "C": 1, "D": 9, "E": 9, "F": 2}},
             {"count": 7, "ballot": {"A": 3, "B": 2, "C": 3, "D": 1, "E": 9, "F": 9}},
-            {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}}
+            {"count": 2, "ballot": {"A": 9, "B": 9, "C": 9, "D": 9, "E": 1, "F": 9}},
         ]
-        output = SchulzePR(input, winner_threshold=2, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzePR(
+            input, winner_threshold=2, ballot_notation=SchulzePR.BALLOT_NOTATION_RANKING
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            "candidates": set(["A", "B", "C", "D", "E", "F"]),
-            "order": ["B", "C"],
-            "rounds": [
-                {'winner': 'B'},
-                {'winner': 'C'}
-            ],
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["A", "B", "C", "D", "E", "F"]),
+                "order": ["B", "C"],
+                "rounds": [{"winner": "B"}, {"winner": "C"}],
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,32 +13,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.schulze_npr import SchulzeNPR
 import unittest
+
+from py3votecore.schulze_npr import SchulzeNPR
 
 
 class TestSchulzeNPR(unittest.TestCase):
-
     def test_single_voter(self):
 
         # Generate data
         input = [
             {"count": 1, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
         ]
-        output = SchulzeNPR(input, winner_threshold=5, ballot_notation=SchulzeNPR.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeNPR(
+            input,
+            winner_threshold=5,
+            ballot_notation=SchulzeNPR.BALLOT_NOTATION_RANKING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'order': ['A', 'B', 'C', 'D', 'E'],
-            'candidates': set(['A', 'B', 'C', 'D', 'E']),
-            'rounds': [
-                {'winner': 'A'},
-                {'winner': 'B'},
-                {'winner': 'C'},
-                {'winner': 'D'},
-                {'winner': 'E'}
-            ]
-        })
+        self.assertEqual(
+            output,
+            {
+                "order": ["A", "B", "C", "D", "E"],
+                "candidates": set(["A", "B", "C", "D", "E"]),
+                "rounds": [
+                    {"winner": "A"},
+                    {"winner": "B"},
+                    {"winner": "C"},
+                    {"winner": "D"},
+                    {"winner": "E"},
+                ],
+            },
+        )
 
     def test_nonproportionality(self):
 
@@ -47,20 +54,27 @@ class TestSchulzeNPR(unittest.TestCase):
             {"count": 2, "ballot": {"A": 1, "B": 2, "C": 3, "D": 4, "E": 5}},
             {"count": 1, "ballot": {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}},
         ]
-        output = SchulzeNPR(input, winner_threshold=5, ballot_notation=SchulzeNPR.BALLOT_NOTATION_RANKING).as_dict()
+        output = SchulzeNPR(
+            input,
+            winner_threshold=5,
+            ballot_notation=SchulzeNPR.BALLOT_NOTATION_RANKING,
+        ).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'order': ['A', 'B', 'C', 'D', 'E'],
-            'candidates': set(['A', 'B', 'C', 'D', 'E']),
-            'rounds': [
-                {'winner': 'A'},
-                {'winner': 'B'},
-                {'winner': 'C'},
-                {'winner': 'D'},
-                {'winner': 'E'}
-            ]
-        })
+        self.assertEqual(
+            output,
+            {
+                "order": ["A", "B", "C", "D", "E"],
+                "candidates": set(["A", "B", "C", "D", "E"]),
+                "rounds": [
+                    {"winner": "A"},
+                    {"winner": "B"},
+                    {"winner": "C"},
+                    {"winner": "D"},
+                    {"winner": "E"},
+                ],
+            },
+        )
 
 
 if __name__ == "__main__":

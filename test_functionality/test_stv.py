@@ -13,12 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from py3votecore.stv import STV
 import unittest
+
+from py3votecore.stv import STV
 
 
 class TestSTV(unittest.TestCase):
-
     # STV, no rounds
     def test_stv_landslide(self):
 
@@ -26,20 +26,25 @@ class TestSTV(unittest.TestCase):
         input = [
             {"count": 56, "ballot": ["c1", "c2", "c3"]},
             {"count": 40, "ballot": ["c2", "c3", "c1"]},
-            {"count": 20, "ballot": ["c3", "c1", "c2"]}
+            {"count": 20, "ballot": ["c3", "c1", "c2"]},
         ]
         output = STV(input, required_winners=2).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['c1', 'c2', 'c3']),
-            'quota': 39,
-            'rounds': [{
-                'tallies': {'c3': 20.0, 'c2': 40.0, 'c1': 56.0},
-                'winners': set(['c2', 'c1'])
-            }],
-            'winners': set(['c2', 'c1'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["c1", "c2", "c3"]),
+                "quota": 39,
+                "rounds": [
+                    {
+                        "tallies": {"c3": 20.0, "c2": 40.0, "c1": 56.0},
+                        "winners": set(["c2", "c1"]),
+                    }
+                ],
+                "winners": set(["c2", "c1"]),
+            },
+        )
 
     # STV, no rounds
     def test_stv_everyone_wins(self):
@@ -48,18 +53,21 @@ class TestSTV(unittest.TestCase):
         input = [
             {"count": 56, "ballot": ["c1", "c2", "c3"]},
             {"count": 40, "ballot": ["c2", "c3", "c1"]},
-            {"count": 20, "ballot": ["c3", "c1", "c2"]}
+            {"count": 20, "ballot": ["c3", "c1", "c2"]},
         ]
         output = STV(input, required_winners=3).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['c1', 'c2', 'c3']),
-            'quota': 30,
-            'rounds': [],
-            'remaining_candidates': set(['c1', 'c2', 'c3']),
-            'winners': set(['c1', 'c2', 'c3'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["c1", "c2", "c3"]),
+                "quota": 30,
+                "rounds": [],
+                "remaining_candidates": set(["c1", "c2", "c3"]),
+                "winners": set(["c1", "c2", "c3"]),
+            },
+        )
 
     # STV, example from Wikipedia
     # http://en.wikipedia.org/wiki/Single_transferable_vote#An_example
@@ -72,23 +80,46 @@ class TestSTV(unittest.TestCase):
             {"count": 8, "ballot": ["chocolate", "strawberry"]},
             {"count": 4, "ballot": ["chocolate", "sweets"]},
             {"count": 1, "ballot": ["strawberry"]},
-            {"count": 1, "ballot": ["sweets"]}
+            {"count": 1, "ballot": ["sweets"]},
         ]
         output = STV(input, required_winners=3).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['orange', 'pear', 'chocolate', 'strawberry', 'sweets']),
-            'quota': 6,
-            'rounds': [
-                {'tallies': {'orange': 4.0, 'strawberry': 1.0, 'pear': 2.0, 'sweets': 1.0, 'chocolate': 12.0}, 'winners': set(['chocolate'])},
-                {'tallies': {'orange': 4.0, 'strawberry': 5.0, 'pear': 2.0, 'sweets': 3.0}, 'loser': 'pear'},
-                {'tallies': {'orange': 6.0, 'strawberry': 5.0, 'sweets': 3.0}, 'winners': set(['orange'])},
-                {'tallies': {'strawberry': 5.0, 'sweets': 3.0}, 'loser': 'sweets'}
-            ],
-            'remaining_candidates': set(['strawberry']),
-            'winners': set(['orange', 'strawberry', 'chocolate'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["orange", "pear", "chocolate", "strawberry", "sweets"]),
+                "quota": 6,
+                "rounds": [
+                    {
+                        "tallies": {
+                            "orange": 4.0,
+                            "strawberry": 1.0,
+                            "pear": 2.0,
+                            "sweets": 1.0,
+                            "chocolate": 12.0,
+                        },
+                        "winners": set(["chocolate"]),
+                    },
+                    {
+                        "tallies": {
+                            "orange": 4.0,
+                            "strawberry": 5.0,
+                            "pear": 2.0,
+                            "sweets": 3.0,
+                        },
+                        "loser": "pear",
+                    },
+                    {
+                        "tallies": {"orange": 6.0, "strawberry": 5.0, "sweets": 3.0},
+                        "winners": set(["orange"]),
+                    },
+                    {"tallies": {"strawberry": 5.0, "sweets": 3.0}, "loser": "sweets"},
+                ],
+                "remaining_candidates": set(["strawberry"]),
+                "winners": set(["orange", "strawberry", "chocolate"]),
+            },
+        )
 
     # STV, no rounds
     def test_stv_single_ballot(self):
@@ -100,16 +131,30 @@ class TestSTV(unittest.TestCase):
         output = STV(input, required_winners=3).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['c1', 'c2', 'c3', 'c4']),
-            'quota': 1,
-            'rounds': [
-                {'tallies': {'c1': 1.0, 'c2': 0, 'c3': 0, 'c4': 0}, 'winners': set(['c1'])},
-                {'note': 'reset', 'tallies': {'c2': 1.0, 'c3': 0, 'c4': 0}, 'winners': set(['c2'])},
-                {'note': 'reset', 'tallies': {'c3': 1.0, 'c4': 0}, 'winners': set(['c3'])},
-            ],
-            'winners': set(['c1', 'c2', 'c3'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["c1", "c2", "c3", "c4"]),
+                "quota": 1,
+                "rounds": [
+                    {
+                        "tallies": {"c1": 1.0, "c2": 0, "c3": 0, "c4": 0},
+                        "winners": set(["c1"]),
+                    },
+                    {
+                        "note": "reset",
+                        "tallies": {"c2": 1.0, "c3": 0, "c4": 0},
+                        "winners": set(["c2"]),
+                    },
+                    {
+                        "note": "reset",
+                        "tallies": {"c3": 1.0, "c4": 0},
+                        "winners": set(["c3"]),
+                    },
+                ],
+                "winners": set(["c1", "c2", "c3"]),
+            },
+        )
 
     # STV, no rounds
     def test_stv_fewer_voters_than_winners(self):
@@ -122,15 +167,25 @@ class TestSTV(unittest.TestCase):
         output = STV(input, required_winners=3).as_dict()
 
         # Run tests
-        self.assertEqual(output, {
-            'candidates': set(['c1', 'c2', 'c3', 'c4']),
-            'quota': 1,
-            'rounds': [
-                {'tallies': {'c1': 1.0, 'c2': 1.0, 'c3': 0, 'c4': 0}, 'winners': set(['c1', 'c2'])},
-                {'note': 'reset', 'tallies': {'c3': 2.0, 'c4': 0}, 'winners': set(['c3'])},
-            ],
-            'winners': set(['c1', 'c2', 'c3'])
-        })
+        self.assertEqual(
+            output,
+            {
+                "candidates": set(["c1", "c2", "c3", "c4"]),
+                "quota": 1,
+                "rounds": [
+                    {
+                        "tallies": {"c1": 1.0, "c2": 1.0, "c3": 0, "c4": 0},
+                        "winners": set(["c1", "c2"]),
+                    },
+                    {
+                        "note": "reset",
+                        "tallies": {"c3": 2.0, "c4": 0},
+                        "winners": set(["c3"]),
+                    },
+                ],
+                "winners": set(["c1", "c2", "c3"]),
+            },
+        )
 
     # STV, Ian Jacobs use-case
     def test_stv_ian_jacobs(self):
@@ -175,12 +230,12 @@ class TestSTV(unittest.TestCase):
             {"count": 1, "ballot": ["D", "A", "B", "F", "E", "C", "G"]},
             {"count": 1, "ballot": ["D", "B", "C", "F", "A", "E", "G"]},
             {"count": 1, "ballot": ["A", "F", "C", "E", "B", "G"]},
-            {"count": 1, "ballot": ["F", "A", "B"]}
+            {"count": 1, "ballot": ["F", "A", "B"]},
         ]
         output = STV(input, required_winners=4).as_dict()
 
         # Run tests
-        self.assertEqual(output["winners"], set(['A', 'C', 'D', 'F']))
+        self.assertEqual(output["winners"], set(["A", "C", "D", "F"]))
 
     # STV, Ian Jacobs use-case #3
     def test_stv_ian_jacobs_3(self):
@@ -196,7 +251,6 @@ class TestSTV(unittest.TestCase):
 
         # Run tests
         self.assertEqual(output["winners"], set(["A", "B", "C"]))
-
 
 
 if __name__ == "__main__":
