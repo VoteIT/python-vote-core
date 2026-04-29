@@ -29,7 +29,7 @@ classifiers = [
 Homepage = "https://github.com/VoteIT/python-vote-core"
 Repository = "https://github.com/VoteIT/python-vote-core.git"
 Issues = "https://github.com/VoteIT/python-vote-core/issues"
-Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+Changelog = "https://github.com/VoteIT/python-vote-core/blob/main/CHANGES.md"
 
 [dependency-groups]
 dev = [
