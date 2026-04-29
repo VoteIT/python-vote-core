@@ -12,12 +12,12 @@
 - **Fix**: STV quota was not updated after a ballot reset, causing winner determination and surplus redistribution to use the original (lower) quota instead of the recalculated one. This could produce incorrect winners in multi-seat elections where ballots exhaust before all seats are filled.
 - **Fix**: Schulze/Condorcet methods mutated the caller's ballot data in-place when converting from grouping or ranking notation to rating format. Input ballots are now deep-copied so reuse is safe.
 
-### Older changelog from previous name
+## Older versions (py-vote-core / python-vote-core)
 
 ### 20110509.1
 
--  Fixing PyPi release
+- Fixing PyPi release
 
 ### 20110509.0
 
--  Initial PyPi release
+- Initial PyPi release
